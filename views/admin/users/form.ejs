@@ -1,0 +1,75 @@
+<%- include('../partials/header') %>
+    <%- include('../partials/menu') %>
+        <div class="container">
+            <div class="card">
+                <form action="" method="post" encType="multipart/form-data">
+                    <div class="card-header">
+                        <h1>Form</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 row">
+                            <label for="fullname" class="col-sm-2 col-form-label">Fullname</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="fullname" name="fullname" value="<%= data.fullname %>" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="email" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" class="form-control" id="email" name="email" value="<%= data.email %>" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="phone" name="phone" value="<%= data.phone %>">
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-3 row">
+                            <label for="pass" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <% if(data.id){ %>
+                                <a href="/users/password" class="btn btn-success">Change Password</a>
+                                <% } else { %>
+                                    <input type="password" class="form-control" id="pass" name="pass" value="<%= data.pass %>" required>
+                                    <% } %>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="pass" class="col-sm-2 col-form-label">Role</label>
+                            <div class="col-sm-10">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="isadmin" id="admin" value="true" <%= data.isadmin ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="admin">Admin</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="isadmin" id="user" value="false" <%= !data.isadmin ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="user">User</label>
+                                  </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="avatar" class="col-sm-2 col-form-label">Avatar</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" type="file" id="avatar" name="avatar">
+                            </div>
+                        </div>
+                        <% if(data.avatar){ %>
+                        <img src="/images/<%= data.avatar %>" alt="">
+                        <% } %>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-info"><i class="fa-solid fa-floppy-disk"></i></button>
+                        <a href="/users" class="btn btn-warning"><i class="fa-solid fa-rotate-left"></i></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
