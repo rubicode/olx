@@ -31,7 +31,7 @@ module.exports = function (db) {
         if (result) {
           req.session.user = user.rows[0]
           if (user.rows[0].isadmin) {
-            res.redirect('/categories')
+            res.redirect('/ads')
           } else {
             res.redirect('/')
           }
