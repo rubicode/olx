@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Belajar HTML</title>
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link href="/fontawesome/css/all.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <form action="" method="post" encType="multipart/form-data">
+                <div class="card-header">
+                    <h1>Your Profile</h1>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="fullname" class="col-sm-2 col-form-label">Fullname</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="fullname" name="fullname"
+                                value="<%= data.fullname %>" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email" name="email" value="<%= data.email %>"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="phone" name="phone" value="<%= data.phone %>">
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 row">
+                        <label for="pass" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <% if(data.id){ %>
+                                <a href="/users/password" class="btn btn-success">Change Password</a>
+                                <% } else { %>
+                                    <input type="password" class="form-control" id="pass" name="pass"
+                                        value="<%= data.pass %>" required>
+                                    <% } %>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="avatar" class="col-sm-2 col-form-label">Avatar</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="file" id="avatar" name="avatar">
+                        </div>
+                    </div>
+                    <% if(data.avatar){ %>
+                        <img src="/images/avatars/<%= data.avatar %>" alt="">
+                        <% } %>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <a href="/" class="btn btn-warning"><i class="fa-solid fa-rotate-left"></i></a>
+                </div>
+            </form>
+            <div style="margin-top: 50px; padding: 20px;">
+                <table id="example" class="display" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Approved</th>
+                            <th>Picture</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% ads.forEach((item)=> { %>
+                            <tr>
+                                <td>
+                                    <%= item.title %>
+                                </td>
+                                <td>
+                                    <%= item.price %>
+                                </td>
+                                <td>
+                                    <%= item.approved ? 'yes' : 'no' %>
+                                </td>
+                                <td>
+                                    <img src="/images/ads/<%= item.pictures[0] %>" alt="" width="300" height="auto">
+                                </td>
+                                <td>
+                                    <a href="#<%= item.id %>" class="btn btn-success"><i
+                                            class="fa-solid fa-pencil"></i></a>
+                                    <a href="#<%= item.id %>" class="btn btn-danger"><i
+                                            class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
+</body>
+
+</html>

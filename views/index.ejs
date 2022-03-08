@@ -3,10 +3,11 @@
 
 <head>
   <title>
-    <%= title %>
+    OLX
   </title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/carousel.css' />
+  <link href="/fontawesome/css/all.css" rel="stylesheet">
   <style>
     .container {
       margin: 0;
@@ -91,14 +92,18 @@
           </path>
         </svg>
       </a>
-      <form class="form-inline">
-        <select name="" id="">
-          <option value="all">Semua</option>
+      <form class="form-inline" action="" method="get">
+        <select name="category">
+          <option value="">Semua</option>
+            <% categories.forEach(item => { %>
+            <option value="<%= item.id %>"<%= query.category == item.id ? ' selected' : ''%>><%= item.name %></option>
+            <% }) %>
         </select>
-        <input type="text">
+        <input type="text" name="keyword" value="<%= query.keyword %>">
+        <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
       <a href="<%= user ? '/profile' : '/login' %>"><%= user ? user.fullname : 'login' %></a>
-      <a class="btn" href="">jual</a>
+      <a class="btn" href="/sell">jual</a>
     </div>
     <div class="carousel">
       <div class="slideshow-container">
@@ -134,21 +139,13 @@
       </div>
     </div>
     <div class="ads">
+      <% data.forEach(item => { %>
       <div class="item-ads">
-        <img src="/images/img_mountains_wide.jpeg" alt="">
-        <h2>Rp. 10.000.000</h2>
-        <p>Jual gunung</p>
+        <img src="/images/ads/<%= item.pictures[0] %>" alt="">
+        <h2><%= item.price %></h2>
+        <p><%= item.title %></p>
       </div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
-      <div class="item-ads"></div>
+      <% }) %>
     </div>
   </div>
 

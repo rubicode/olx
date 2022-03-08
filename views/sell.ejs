@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Belajar HTML</title>
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/fontawesome/css/all.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <form action="" method="post" encType="multipart/form-data">
+                <div class="card-header">
+                    <h1>Hello, <%= user.fullname %>.</h1>
+                    <p>Kamu bisa ngiklan disini</p>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="title" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" name="title" value="<%= data.title %>"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="description" class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="description" name="description"
+                                rows="5"><%= data.description %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="category" class="col-sm-2">Category</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="category" name="category">
+                                <option value="">--pilih category--</option>
+                                <% categories.forEach(item=> { %>
+                                    <option value="<%= item.id %>" <%=data.category==item.id ? ' selected' : '' %>>
+                                        <%= item.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="price" class="col-sm-2 col-form-label">Price</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="price" name="price" value="<%= data.price %>">
+                        </div>
+                    </div>
+
+                    <% if(data.pictures?.length> 0){ data.pictures.forEach((picture, index) => { %>
+                        <div class="mb-3 row">
+                            <input type="hidden" name="pictures" value="<%= picture %>">
+                            <label for="" class="col-sm-2 col-form-label">Picture <span class="count">
+                                    <%= index + 1%>
+                                </span></label>
+                            <div class="col-sm-9">
+                                <img src="/images/ads/<%= picture %>" alt="" width="300" height="auto">
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-danger" type="button" onclick="removeUpload(this)"><i
+                                        class="fa-solid fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <% })} %>
+                            <div class="mb-3 row">
+                                <label for="" class="col-sm-2 col-form-label">Picture <span class="count">
+                                        <%= data.pictures ? data.pictures.length + 1 : 1 %>
+                                    </span></label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="file" id="" name="picture">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row" id="div-add-btn">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-10">
+                                    <button class="btn btn-success" type="button" onclick="addUpload()"><i
+                                            class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+
+
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <a href="/ads" class="btn btn-warning"><i class="fa-solid fa-rotate-left"></i></a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var count = Number("<%= data.pictures ? data.pictures.length + 1 : 1 %>");
+        function addUpload() {
+            count++
+            let html = `
+                        <div class="mb-3 row">
+                            <label for="" class="col-sm-2 col-form-label">Picture <span class="count">${count}</span></label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="file" id="" name="picture">
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-danger" type="button" onclick="removeUpload(this)"><i class="fa-solid fa-minus"></i></button>
+                            </div>
+                        </div>
+                `
+            var addBtn = document.getElementById("div-add-btn");
+            addBtn.insertAdjacentHTML("beforebegin", html);
+        }
+
+        function removeUpload(removeBtn) {
+            removeBtn.parentNode.parentNode.remove()
+            count--
+
+            const counter = document.getElementsByClassName('count')
+            for (let index = 0; index < counter.length; index++) {
+                counter[index].innerHTML = index + 1
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
