@@ -8,6 +8,24 @@
     <link href="/fontawesome/css/all.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        .modal-body {
+            top: 0;
+            left: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(167, 164, 164, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-body .my-modal {
+            width: 80%;
+        }
+    </style>
 </head>
 
 <body>
@@ -80,38 +98,102 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <% ads.forEach((item)=> { %>
-                            <tr>
-                                <td>
-                                    <%= item.title %>
-                                </td>
-                                <td>
-                                    <%= item.price %>
-                                </td>
-                                <td>
-                                    <%= item.approved ? 'yes' : 'no' %>
-                                </td>
-                                <td>
-                                    <img src="/images/ads/<%= item.pictures[0] %>" alt="" width="300" height="auto">
-                                </td>
-                                <td>
-                                    <a href="#<%= item.id %>" class="btn btn-success"><i
-                                            class="fa-solid fa-pencil"></i></a>
-                                    <a href="#<%= item.id %>" class="btn btn-danger"><i
-                                            class="fa-solid fa-trash"></i></a>
-                                </td>
-                            </tr>
-                            <% }) %>
-                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <div class="modal-body">
+        <div class="card my-modal">
+            <form id="form-edit">
+                <input type="hidden" id="id" value="">
+                <div class="card-header">
+                    <h1>Form Edit</h1>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 row">
+                        <label for="title" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" value="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="description" class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="price" class="col-sm-2 col-form-label">Price</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="price" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-warning tombol-close">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
-            $('#example').DataTable();
+            const table = $('#example').DataTable({
+                "lengthMenu": [[1, 2, 3, -1], [1, 2, 3, "All"]],
+                "processing": true,
+                "serverSide": true,
+                "ajax": "/ads/data",
+                "columns": [
+                    { data: "title" },
+                    { data: "price" },
+                    { data: "approved" },
+                    {
+                        data: "pictures",
+                        orderable: false,
+                        render: function (data, type) {
+                            return `<img src="/images/ads/${data[0]}" alt="gambar produk" width="100" />`
+                        }
+                    },
+                    {
+                        data: "id",
+                        orderable: false,
+                        render: function (data, type) {
+                            return `<button type="button" dataid="${data}" class="btn btn-success btn-edit"><i class="fa-solid fa-pencil"></i></button>`
+                        }
+                    }
+                ]
+            });
+
+            $('#example').on('click', '.btn-edit', function () {
+                const id = $(this).attr('dataid')
+                $.get(`/ads/data/${id}`, function (data) {
+                    $('#id').val(data.id)
+                    $('#title').val(data.title)
+                    $('#description').val(data.description)
+                    $('#price').val(data.price)
+
+                    $('.modal-body').css('display', 'flex')
+                })
+            })
+
+            $('.tombol-close').click(function () {
+                $('.modal-body').css('display', 'none')
+            })
+
+            $('#form-edit').submit(function (e) {
+                e.preventDefault()
+                const id = $('#id').val()
+                const title = $('#title').val()
+                const description = $('#description').val()
+                const price = $('#price').val()
+
+                $.post(`/ads/data/${id}`, { title, description, price }, function (data) {
+                    table.ajax.reload();
+                    $('.modal-body').css('display', 'none')
+                })
+            })
         });
     </script>
 </body>
