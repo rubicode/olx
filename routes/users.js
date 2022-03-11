@@ -58,7 +58,8 @@ module.exports = function (db) {
           pages,
           query: req.query, url,
           user: req.session.user,
-          successMessage: req.flash('successMessage')
+          successMessage: req.flash('successMessage'),
+          path: req.originalUrl
         })
       })
     })
@@ -67,7 +68,8 @@ module.exports = function (db) {
   router.get('/add', helpers.isLoggedIn, function (req, res) {
     res.render('admin/users/form', {
       user: req.session.user,
-      data: {}
+      data: {},
+      path: req.originalUrl
     })
   })
 
@@ -123,7 +125,8 @@ module.exports = function (db) {
       if (err) return res.send(err)
       res.render('admin/users/form', {
         user: req.session.user,
-        data: item.rows[0]
+        data: item.rows[0],
+        path: req.originalUrl
       })
     })
   })

@@ -63,6 +63,7 @@
     .item-ads h2 {
       margin-top: 50px;
       font-size: 20px;
+      color: rgb(99, 98, 98);
     }
 
     .item-ads p {
@@ -77,8 +78,6 @@
       align-items: center;
       gap: 10px;
     }
-
-    
   </style>
 </head>
 
@@ -95,14 +94,17 @@
       <form class="form-inline" action="" method="get">
         <select name="category">
           <option value="">Semua</option>
-            <% categories.forEach(item => { %>
-            <option value="<%= item.id %>"<%= query.category == item.id ? ' selected' : ''%>><%= item.name %></option>
+          <% categories.forEach(item=> { %>
+            <option value="<%= item.id %>" <%=query.category==item.id ? ' selected' : '' %>><%= item.name %>
+            </option>
             <% }) %>
         </select>
         <input type="text" name="keyword" value="<%= query.keyword %>">
         <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
-      <a href="<%= user ? '/profile' : '/login' %>"><%= user ? user.fullname : 'login' %></a>
+      <a href="<%= user ? '/profile' : '/login' %>">
+        <%= user ? user.fullname : 'login' %>
+      </a>
       <a class="btn" href="/sell">jual</a>
     </div>
     <div class="carousel">
@@ -139,44 +141,23 @@
       </div>
     </div>
     <div class="ads">
-      <% data.forEach(item => { %>
-      <div class="item-ads">
-        <img src="/images/ads/<%= item.pictures[0] %>" alt="">
-        <h2><%= item.price %></h2>
-        <p><%= item.title %></p>
-      </div>
-      <% }) %>
+      <% data.forEach(item=> { %>
+        <a href="/detail/<%= item.id %>" style="text-decoration: none; color: transparent;">
+          <div class="item-ads">
+            <img src="/images/ads/<%= item.pictures[0] %>" alt="">
+            <h2>
+              <%= formatter.format(item.price) %>
+            </h2>
+            <p>
+              <%= item.title %>
+            </p>
+          </div>
+        </a>
+        <% }) %>
     </div>
   </div>
 
-  <script>
-    var slideIndex = 1;
-    showSlides(slideIndex);
-
-    function plusSlides(n) {
-      showSlides(slideIndex += n);
-    }
-
-    function currentSlide(n) {
-      showSlides(slideIndex = n);
-    }
-
-    function showSlides(n) {
-      var i;
-      var slides = document.getElementsByClassName("mySlides");
-      var dots = document.getElementsByClassName("dot");
-      if (n > slides.length) { slideIndex = 1 }
-      if (n < 1) { slideIndex = slides.length }
-      for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-      }
-      for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
-      }
-      slides[slideIndex - 1].style.display = "block";
-      dots[slideIndex - 1].className += " active";
-    }
-  </script>
+  <script src="/javascripts/carousel.js"></script>
 
 </body>
 

@@ -33,7 +33,11 @@
         <div class="card">
             <form action="" method="post" encType="multipart/form-data">
                 <div class="card-header">
-                    <h1>Your Profile</h1>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h1>Your Profile</h1>
+                        <a href="/logout" class="btn btn-danger">Keluar</a>
+                    </div>
+                    
                 </div>
                 <div class="card-body">
                     <div class="mb-3 row">
@@ -160,7 +164,10 @@
                         data: "id",
                         orderable: false,
                         render: function (data, type) {
-                            return `<button type="button" dataid="${data}" class="btn btn-success btn-edit"><i class="fa-solid fa-pencil"></i></button>`
+                            return `
+                            <button type="button" dataid="${data}" class="btn btn-success btn-edit"><i class="fa-solid fa-pencil"></i></button>
+                            <button type="button" dataid="${data}" class="btn btn-danger btn-delete"><i class="fa-solid fa-trash"></i></button>
+                            `
                         }
                     }
                 ]
@@ -176,6 +183,22 @@
 
                     $('.modal-body').css('display', 'flex')
                 })
+            })
+
+            $('#example').on('click', '.btn-delete', function () {
+                const id = $(this).attr('dataid')
+
+                $.ajax({
+                    url: `/ads/data/${id}`,
+                    method: "DELETE",
+                    dataType: "json"
+                }).done(function (data) {
+                    console.log(data)
+                    table.ajax.reload();
+                }).fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+                
             })
 
             $('.tombol-close').click(function () {

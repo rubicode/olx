@@ -9,6 +9,7 @@ const saltRounds = 10
 module.exports = function (db) {
 
   router.get('/', function (req, res, next) {
+    
     const url = req.url == '/' ? '/ads?page=1&sortBy=id&sortMode=asc' : req.url.replace('/', '/ads')
     const params = []
 
@@ -23,7 +24,7 @@ module.exports = function (db) {
     }
 
     const page = req.query.page || 1
-    const limit = 3
+    const limit = 10
     const offset = (page - 1) * limit
     let sql = 'select count(*) as total from ads';
     if (params.length > 0) {
@@ -57,12 +58,26 @@ module.exports = function (db) {
               user: req.session.user,
               categories: categories.rows,
               users: users.rows,
-              successMessage: req.flash('successMessage')
+              successMessage: req.flash('successMessage'),
+              formatter: helpers.formatter
             })
           })
         })
       })
     })
+  });
+
+  router.get('/detail/:id',  function (req, res) {
+    const id = Number(req.params.id)
+    db.query('select * from ads left join users on ads.seller = users.id where ads.id = $1', [id], (err, data) => {
+      if (err) return res.json({ err: err })
+      if (data.rows.length == 0) return res.json({ err: "data tidak ditemukan" })
+      
+      res.render('detail', {
+        item: data.rows[0],
+        formatter: helpers.formatter
+      })
+    });
   });
 
   router.get('/sell', helpers.isLoggedIn, function (req, res) {
@@ -84,7 +99,7 @@ module.exports = function (db) {
           req.flash('successMessage', `gagal bikin ads`)
           return res.redirect('/')
         }
-        res.redirect('/')
+        res.redirect('/profile')
       });
     } else {
       const fileNames = []
@@ -105,7 +120,7 @@ module.exports = function (db) {
             req.flash('successMessage', `gagal bikin ads plus picture`)
             return res.redirect('/')
           }
-          res.redirect('/')
+          res.redirect('/profile')
         })
       } else {
         const file = req.files.picture;
@@ -123,7 +138,7 @@ module.exports = function (db) {
               req.flash('successMessage', `gagal bikin ads plus pictures`)
               return res.redirect('/')
             }
-            res.redirect('/')
+            res.redirect('/profile')
           });
         });
       }
@@ -230,7 +245,7 @@ module.exports = function (db) {
 
   router.get('/logout', function (req, res) {
     req.session.destroy(function (err) {
-      res.redirect('/login')
+      res.redirect('/')
     })
   })
 

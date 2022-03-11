@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        OLX
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/carousel.css' />
+    <link href="/fontawesome/css/all.css" rel="stylesheet">
+    <style>
+        .container {
+            margin: 0;
+            padding: 0;
+        }
+
+        .carousel {
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .box {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+        }
+
+        .description {
+            min-height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <%= item.title %>
+            </h1>
+        </div>
+        <div class="carousel">
+            <div class="slideshow-container">
+
+                <% item.pictures.forEach((picture, index)=> {%>
+                    <div class="mySlides fade">
+                        <div class="numbertext">
+                            <%= `${index + 1} / ${item.pictures.length}` %>
+                        </div>
+                        <img src="/images/ads/<%= picture %>" style="width:100%">
+                        <div class="text">Gambar ke-<%= index + 1 %>
+                        </div>
+                    </div>
+                    <% }) %>
+
+                        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+            </div>
+            <br>
+
+            <div style="text-align:center">
+                <% item.pictures.forEach((picture, index)=> {%>
+                    <%- `<span class="dot" onclick="currentSlide(${index + 1})"></span>` %>
+                        <% }) %>
+            </div>
+        </div>
+        <h2 style="margin-left: 20px;"><%= formatter.format(item.price) %></h2>
+        <div class="box description">
+            <%= item.description %>
+        </div>
+        <fieldset class="box">
+            <legend>Contact Person</legend>
+            <h2><%= item.fullname %></h2>
+            <p><%= item.phone %></p>
+        </fieldset>
+    </div>
+
+    <script src="/javascripts/carousel.js"></script>
+</body>
+
+</html>

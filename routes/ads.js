@@ -10,6 +10,8 @@ module.exports = function (db) {
 
   router.get('/', helpers.isLoggedIn, function (req, res) {
 
+    console.log(req.originalUrl)
+
     const url = req.url == '/' ? '/ads?page=1&sortBy=id&sortMode=asc' : req.url.replace('/', '/ads')
 
     const params = []
@@ -60,7 +62,8 @@ module.exports = function (db) {
               user: req.session.user,
               categories: categories.rows,
               users: users.rows,
-              successMessage: req.flash('successMessage')
+              successMessage: req.flash('successMessage'),
+              path: req.originalUrl
             })
           })
         })
@@ -69,6 +72,7 @@ module.exports = function (db) {
   })
 
   router.get('/add', helpers.isLoggedIn, function (req, res) {
+    
     db.query('select * from categories order by id', (err, categories) => {
       if (err) return res.send(err)
       db.query('select * from users order by id', (err, users) => {
@@ -78,6 +82,7 @@ module.exports = function (db) {
           data: {},
           categories: categories.rows,
           users: users.rows,
+          path: req.originalUrl
         })
       })
     })
@@ -159,6 +164,7 @@ module.exports = function (db) {
             data: item.rows[0],
             categories: categories.rows,
             users: users.rows,
+            path: req.originalUrl
           })
         })
       })
@@ -266,6 +272,14 @@ module.exports = function (db) {
       });
 
     })
+  })
+
+  router.delete('/data/:id', helpers.isLoggedIn, function (req, res) {
+    const id = Number(req.params.id)
+    db.query('delete from ads where id = $1 returning *', [id], (err, data) => {
+      if (err) return res.json({ err: err })
+      res.json(data)
+    });
   })
 
   return router;
