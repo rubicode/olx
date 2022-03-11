@@ -9,7 +9,7 @@ const saltRounds = 10
 module.exports = function (db) {
 
   router.get('/', function (req, res, next) {
-    
+
     const url = req.url == '/' ? '/ads?page=1&sortBy=id&sortMode=asc' : req.url.replace('/', '/ads')
     const params = []
 
@@ -24,7 +24,7 @@ module.exports = function (db) {
     }
 
     const page = req.query.page || 1
-    const limit = 10
+    const limit = 8
     const offset = (page - 1) * limit
     let sql = 'select count(*) as total from ads';
     if (params.length > 0) {
@@ -49,30 +49,34 @@ module.exports = function (db) {
           if (err) return res.send(err)
           db.query('select * from users order by id', (err, users) => {
             if (err) return res.send(err)
-            res.render('index', {
-              data: data.rows,
-              page,
-              pages,
-              query: req.query,
-              url,
-              user: req.session.user,
-              categories: categories.rows,
-              users: users.rows,
-              successMessage: req.flash('successMessage'),
-              formatter: helpers.formatter
-            })
+            if (req.query.format == 'json') {
+              res.json(data.rows)
+            } else {
+              res.render('index', {
+                data: data.rows,
+                page,
+                pages,
+                query: req.query,
+                url,
+                user: req.session.user,
+                categories: categories.rows,
+                users: users.rows,
+                successMessage: req.flash('successMessage'),
+                formatter: helpers.formatter
+              })
+            }
           })
         })
       })
     })
   });
 
-  router.get('/detail/:id',  function (req, res) {
+  router.get('/detail/:id', function (req, res) {
     const id = Number(req.params.id)
     db.query('select * from ads left join users on ads.seller = users.id where ads.id = $1', [id], (err, data) => {
       if (err) return res.json({ err: err })
       if (data.rows.length == 0) return res.json({ err: "data tidak ditemukan" })
-      
+
       res.render('detail', {
         item: data.rows[0],
         formatter: helpers.formatter
@@ -247,6 +251,22 @@ module.exports = function (db) {
     req.session.destroy(function (err) {
       res.redirect('/')
     })
+  })
+
+  router.get('/seed', function (req, res) {
+    const values = [
+      'example ads',
+      'example description',
+      1,
+      5,
+      1200000,
+      ['1646378062774-img_snow_wide.jpeg', '1646710896241-img_mountains_wide.jpeg'],
+      true
+    ]
+    db.query('insert into ads (title, description, category, seller, price, pictures, approved) values ($1, $2, $3, $4, $5, $6, $7)',
+      values, function () {
+        res.send('success')
+      })
   })
 
   return router;

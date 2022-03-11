@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/carousel.css' />
   <link href="/fontawesome/css/all.css" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
   <style>
     .container {
       margin: 0;
@@ -158,6 +161,49 @@
   </div>
 
   <script src="/javascripts/carousel.js"></script>
+
+  <script>
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'IDR',
+      // These options are needed to round to whole numbers if that's what you want.
+      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+      //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    })
+
+    var page = 1;
+    $(window).scroll(function () {
+      if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+        page++
+        $.ajax({
+          url: `/`,
+          method: "GET",
+          data: { page, format: 'json' },
+          dataType: "json"
+        }).done(function (data) {
+          let html = ''
+          data.forEach(item => {
+            html += `
+            <a href="/detail/${item.id}" style="text-decoration: none; color: transparent;">
+              <div class="item-ads">
+                <img src="/images/ads/${item.pictures[0]}" alt="">
+                <h2>
+                  ${formatter.format(item.price)}
+                </h2>
+                <p>
+                  ${item.title}
+                </p>
+              </div>
+            </a>
+            `
+          })
+          $('.ads').append(html)
+        }).fail(function (jqXHR, textStatus) {
+          alert("Request failed: " + textStatus);
+        });
+      }
+    });
+  </script>
 
 </body>
 
